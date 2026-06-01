@@ -1,0 +1,50 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VN30F Live</title>
+<style>
+:root{--bg:#0f172a;--card:#1e293b;--bd:#334155;--tx:#e2e8f0;--mut:#94a3b8;--g:#22c55e;--r:#ef4444}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--tx);padding:16px}
+h1{font-size:18px;color:#38bdf8;margin:0 0 4px}.mut{color:var(--mut);font-size:12px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;margin:12px 0}
+table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:7px 9px;border-bottom:1px solid var(--bd);text-align:right}
+th:first-child,td:first-child{text-align:left}th{color:#93c5fd;font-size:11px;text-transform:uppercase}
+.g{color:var(--g)}.r{color:var(--r)}.mono{font-variant-numeric:tabular-nums}
+.kpi{display:flex;gap:16px;flex-wrap:wrap}.kpi div{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:10px 16px}
+.kpi b{font-size:22px}.tag{font-size:10px;padding:1px 6px;border-radius:5px;background:#334155;color:#cbd5e1}
+details{margin:4px 0}summary{cursor:pointer;color:#7dd3fc;font-size:12px}
+.tr{font-size:12px;color:var(--mut)}
+</style></head><body>
+<h1>🐆 VN30F Live — Forward Test</h1>
+<div class="mut">Cập nhật: <span id="upd">…</span> · phiên <span id="sess"></span> · go-live <span id="gl"></span> · <span id="ct"></span> HĐ · tự làm mới 60s</div>
+<div class="kpi" id="kpi"></div>
+<div class="card"><h3 style="margin:0 0 8px;font-size:14px">Hiệu quả từng chiến lược</h3>
+<table id="tbl"><thead><tr><th>Mã</th><th>TF</th><th>Hôm nay</th><th>T-B</th><th>Lũy kế</th><th>T-B</th><th>WR</th><th>Đang mở</th></tr></thead><tbody></tbody></table></div>
+<div class="card"><h3 style="margin:0 0 8px;font-size:14px">Chi tiết lệnh hôm nay</h3><div id="det"></div></div>
+<script>
+const f=(x,d=1)=>(x>0?'+':'')+Number(x).toFixed(d);
+const cls=x=>x>0?'g':(x<0?'r':'');
+function pos(o){if(!o)return '<span class="mut">flat</span>';const s=o.side=='long'?'▲L':'▼S';return `${s} @${o.entry} <span class="${cls(o.unreal)}">${f(o.unreal)}</span>`}
+async function load(){
+ try{const d=await (await fetch('state.json?t='+Date.now())).json();render(d)}catch(e){document.getElementById('upd').textContent='lỗi tải state.json'}
+}
+function render(d){
+ upd.textContent=d.updated;sess.textContent=d.session_date;gl.textContent=d.go_live;ct.textContent=d.contracts;
+ const vnd=p=>(p*d.mult*d.contracts/1e6).toFixed(1)+'tr';const t=d.totals;
+ kpi.innerHTML=`<div>Hôm nay<br><b class="${cls(t.today_pts)}">${f(t.today_pts)}đ</b><br><span class="mut">${vnd(t.today_pts)} · T${t.today_w} B${t.today_l}</span></div>
+ <div>Lũy kế forward<br><b class="${cls(t.fwd_pts)}">${f(t.fwd_pts)}đ</b><br><span class="mut">${vnd(t.fwd_pts)} · T${t.fwd_w} B${t.fwd_l}</span></div>`;
+ let h='';for(const s of d.strats){if(!s.ok){h+=`<tr><td>${s.name}</td><td>${s.tf}</td><td colspan=6 class="r">lỗi: ${s.err}</td></tr>`;continue}
+  const wr=(s.fwd_w+s.fwd_l)?Math.round(100*s.fwd_w/(s.fwd_w+s.fwd_l))+'%':'–';
+  h+=`<tr><td><b>${s.name}</b></td><td><span class="tag">${s.tf}</span></td>
+  <td class="mono ${cls(s.today_pts)}">${f(s.today_pts)}</td><td class="mono">${s.today_w}-${s.today_l}</td>
+  <td class="mono ${cls(s.fwd_pts)}">${f(s.fwd_pts)}</td><td class="mono">${s.fwd_w}-${s.fwd_l}</td><td class="mono">${wr}</td>
+  <td>${pos(s.open)}</td></tr>`}
+ tbl.querySelector('tbody').innerHTML=h;
+ let dh='';for(const s of d.strats){if(!s.trades||!s.trades.length)continue;
+  dh+=`<details><summary><b>${s.name}</b> · ${f(s.today_pts)}đ (${s.today_w}-${s.today_l}) · ${s.trades.length} lệnh</summary>`;
+  for(const x of s.trades){const sd=x.side=='long'?'▲L':'▼S';
+   dh+=`<div class="tr">${sd} ${x.vao}→${x.ra} · ${x.epx}→${x.xpx} · <span class="${cls(x.pts)}">${f(x.pts)}đ</span> · ${x.ly}</div>`}
+  dh+='</details>'}
+ det.innerHTML=dh||'<span class="mut">Hôm nay chưa có lệnh đóng.</span>';
+}
+load();setInterval(load,60000);
+</script></body></html>
