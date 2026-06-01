@@ -25,17 +25,19 @@ td.small{font-size:12px}
 <div class="card"><h3 style="margin:0 0 8px;font-size:14px">Hiệu quả từng chiến lược</h3>
 <div class="scroll"><table id="tbl"><thead>
 <tr><th rowspan="2">Mã</th><th rowspan="2">TF</th>
-<th class="grp" colspan="3">Lãi/lỗ hôm nay</th><th class="grp" colspan="3">Lũy kế forward</th>
-<th rowspan="2">WR</th><th rowspan="2">Vốn còn lại</th><th rowspan="2">%</th><th rowspan="2">Vị thế đang mở</th></tr>
-<tr class="subrow"><th>Điểm</th><th>VNĐ</th><th>Phí/thuế</th><th>Điểm</th><th>VNĐ</th><th>Phí/thuế</th></tr>
-</thead><tbody></tbody></table></div></div>
+<th class="grp" colspan="4">Lãi/lỗ hôm nay</th><th class="grp" colspan="4">Lũy kế forward</th>
+<th rowspan="2">WR</th><th rowspan="2">Vốn còn lại</th><th rowspan="2">%</th></tr>
+<tr class="subrow"><th>Điểm</th><th>VNĐ thô</th><th>Phí/thuế</th><th>Ròng</th><th>Điểm</th><th>VNĐ thô</th><th>Phí/thuế</th><th>Ròng</th></tr>
+</thead><tbody></tbody></table></div>
+<div class="mut" style="margin-top:6px">VNĐ thô = lãi/lỗ từ biến động giá (chưa trừ phí). Ròng = sau khi trừ phí/thuế (đúng tiền vào túi).</div></div>
+<div class="card"><h3 style="margin:0 0 8px;font-size:14px">Vị thế đang mở</h3>
+<div class="scroll"><table id="otbl"><thead><tr><th>Mã</th><th>TF</th><th>Chiều</th><th>Số HĐ</th><th>Giá vào</th><th>Giờ vào</th><th>Lãi/lỗ (điểm)</th><th>Lãi/lỗ tạm tính (VNĐ)</th></tr></thead><tbody></tbody></table></div></div>
 <div class="card"><h3 style="margin:0 0 8px;font-size:14px">Chi tiết lệnh hôm nay</h3><div id="det"></div></div>
 <script>
 const f=(x,d=1)=>(x>0?'+':'')+Number(x).toFixed(d);
 const cls=x=>x>0?'g':(x<0?'r':'');
 const vm=v=>{const a=Math.abs(v),sg=v<0?'-':(v>0?'+':'');return a>=1e6?sg+(a/1e6).toFixed(2)+'tr':a>=1e3?sg+Math.round(a/1e3)+'k':sg+Math.round(a);};
 const fm=v=>{if(!v)return '<span class="mut">–</span>';const a=Math.abs(v);return '<span class="fee">−'+(a>=1e6?(a/1e6).toFixed(2)+'tr':Math.round(a/1e3)+'k')+'</span>';};
-function pos(o){if(!o)return '<span class="mut">flat · 0 HĐ</span>';const s=o.side=='long'?'▲L':'▼S';return `${s} ${o.hd} HĐ @${o.entry} <span class="${cls(o.unreal)}">${f(o.unreal)}đ</span> <span class="mut">(${vm(o.unreal_vnd)})</span>`}
 async function load(){
  try{const d=await (await fetch('state.json?t='+Date.now())).json();render(d)}catch(e){document.getElementById('upd').textContent='lỗi tải state.json'}
 }
@@ -45,21 +47,25 @@ function render(d){
  cap.textContent=(d.start_capital/1e6).toFixed(0)+'tr';
  cost.textContent=Math.round(d.cost_rt_vnd/1e3)+'k';
  const t=d.totals;
- kpi.innerHTML=`<div>Hôm nay<br><b class="${cls(t.today_pts)}">${f(t.today_pts)}đ</b><br><span class="mut">${vm(t.today_vnd)} · phí ${fm(t.today_fee)} · T${t.today_w} B${t.today_l}</span></div>
- <div>Lũy kế forward<br><b class="${cls(t.fwd_pts)}">${f(t.fwd_pts)}đ</b><br><span class="mut">${vm(t.fwd_vnd)} · phí ${fm(t.fwd_fee)} · T${t.fwd_w} B${t.fwd_l}</span></div>
+ kpi.innerHTML=`<div>Hôm nay (ròng)<br><b class="${cls(t.today_net)}">${vm(t.today_net)}</b><br><span class="mut">thô ${vm(t.today_gross)} · phí ${fm(t.today_fee)} · ${f(t.today_gpts)}đ · T${t.today_w} B${t.today_l}</span></div>
+ <div>Lũy kế forward (ròng)<br><b class="${cls(t.fwd_net)}">${vm(t.fwd_net)}</b><br><span class="mut">thô ${vm(t.fwd_gross)} · phí ${fm(t.fwd_fee)} · ${f(t.fwd_gpts)}đ · T${t.fwd_w} B${t.fwd_l}</span></div>
  <div>Tổng tài sản<br><b class="${cls(t.ret_pct)}">${m(t.equity_total)}</b><br><span class="mut">vốn ${m(t.cap_total)} · <span class="${cls(t.ret_pct)}">${f(t.ret_pct,2)}%</span></span></div>`;
  let h='';for(const s of d.strats){if(!s.ok){
-   h+=`<tr><td>${s.name}</td><td>${s.tf}</td><td colspan=7 class="r">lỗi: ${s.err}</td><td class="mono">${m(s.equity)}</td><td class="mono">0%</td><td></td></tr>`;continue}
+   h+=`<tr><td>${s.name}</td><td>${s.tf}</td><td colspan=9 class="r">lỗi: ${s.err}</td><td class="mono">${m(s.equity)}</td><td class="mono">0%</td></tr>`;continue}
   const wr=(s.fwd_w+s.fwd_l)?Math.round(100*s.fwd_w/(s.fwd_w+s.fwd_l))+'%':'–';
   h+=`<tr><td><b>${s.name}</b></td><td><span class="tag">${s.tf}</span></td>
-  <td class="mono ${cls(s.today_pts)}">${f(s.today_pts)}</td><td class="mono ${cls(s.today_vnd)}">${vm(s.today_vnd)}</td><td class="mono">${fm(s.today_fee)}</td>
-  <td class="mono ${cls(s.fwd_pts)}">${f(s.fwd_pts)}</td><td class="mono ${cls(s.fwd_vnd)}">${vm(s.fwd_vnd)}</td><td class="mono">${fm(s.fwd_fee)}</td>
+  <td class="mono ${cls(s.today_gpts)}">${f(s.today_gpts)}</td><td class="mono ${cls(s.today_gross)}">${vm(s.today_gross)}</td><td class="mono">${fm(s.today_fee)}</td><td class="mono ${cls(s.today_net)}"><b>${vm(s.today_net)}</b></td>
+  <td class="mono ${cls(s.fwd_gpts)}">${f(s.fwd_gpts)}</td><td class="mono ${cls(s.fwd_gross)}">${vm(s.fwd_gross)}</td><td class="mono">${fm(s.fwd_fee)}</td><td class="mono ${cls(s.fwd_net)}"><b>${vm(s.fwd_net)}</b></td>
   <td class="mono">${wr}</td>
-  <td class="mono"><b>${m(s.equity)}</b></td><td class="mono ${cls(s.ret_pct)}">${f(s.ret_pct,2)}%</td>
-  <td class="small">${pos(s.open)}</td></tr>`}
+  <td class="mono"><b>${m(s.equity)}</b></td><td class="mono ${cls(s.ret_pct)}">${f(s.ret_pct,2)}%</td></tr>`}
  tbl.querySelector('tbody').innerHTML=h;
+ // bang vi the dang mo
+ let oh='';for(const o of (d.opens||[])){const sd=o.side=='long'?'▲ Long':'▼ Short';
+  oh+=`<tr><td><b>${o.name}</b></td><td><span class="tag">${o.tf}</span></td><td class="${o.side=='long'?'g':'r'}">${sd}</td><td class="mono">${o.hd}</td><td class="mono">${o.entry}</td><td class="mono">${o.vao}</td><td class="mono ${cls(o.unreal)}">${f(o.unreal)}đ</td><td class="mono ${cls(o.unreal_vnd)}"><b>${vm(o.unreal_vnd)}</b></td></tr>`}
+ otbl.querySelector('tbody').innerHTML=oh||'<tr><td colspan="8" class="mut">Hiện không có vị thế mở.</td></tr>';
+ // chi tiet lenh hom nay
  let dh='';for(const s of d.strats){if(!s.trades||!s.trades.length)continue;
-  dh+=`<details><summary><b>${s.name}</b> · ${f(s.today_pts)}đ (${s.today_w}-${s.today_l}) · ${s.trades.length} lệnh</summary>`;
+  dh+=`<details><summary><b>${s.name}</b> · ròng ${vm(s.today_net)} (${s.today_w}-${s.today_l}) · ${s.trades.length} lệnh</summary>`;
   for(const x of s.trades){const sd=x.side=='long'?'▲L':'▼S';
    dh+=`<div class="tr">${sd} ${x.vao}→${x.ra} · ${x.epx}→${x.xpx} · <span class="${cls(x.pts)}">${f(x.pts)}đ</span> · ${x.ly}</div>`}
   dh+='</details>'}
