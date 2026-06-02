@@ -95,9 +95,9 @@ function render(d){
  <div>Lũy kế forward (ròng)<br><b class="${cls(t.fwd_net)}">${vm(t.fwd_net)}</b><br><span class="mut">thô ${vm(t.fwd_gross)} · phí ${fm(t.fwd_fee)} · ${f(t.fwd_gpts)}đ · T${t.fwd_w} B${t.fwd_l}</span></div>
  <div>Tổng tài sản<br><b class="${cls(t.ret_pct)}">${m(t.equity_total)}</b><br><span class="mut">vốn ${m(t.cap_total)} · <span class="${cls(t.ret_pct)}">${f(t.ret_pct,2)}%</span></span></div>`;
  let h='';for(const s of d.strats){if(!s.ok){
-   h+=`<tr><td>${s.name}</td><td>${s.tf}</td><td colspan=9 class="r">lỗi: ${s.err}</td><td class="mono">${m(s.equity)}</td><td class="mono">0%</td></tr>`;continue}
+   h+=`<tr><td>${s.icon||''} ${s.name}</td><td>${s.tf}</td><td colspan=9 class="r">lỗi: ${s.err}</td><td class="mono">${m(s.equity)}</td><td class="mono">0%</td></tr>`;continue}
   const wr=(s.fwd_w+s.fwd_l)?Math.round(100*s.fwd_w/(s.fwd_w+s.fwd_l))+'%':'–';
-  h+=`<tr><td><b>${s.name}</b></td><td><span class="tag">${s.tf}</span></td>
+  h+=`<tr><td>${s.icon||''} <b>${s.name}</b></td><td><span class="tag">${s.tf}</span></td>
   <td class="mono ${cls(s.today_gpts)}">${f(s.today_gpts)}</td><td class="mono ${cls(s.today_gross)}">${vm(s.today_gross)}</td><td class="mono">${fm(s.today_fee)}</td><td class="mono ${cls(s.today_net)}"><b>${vm(s.today_net)}</b></td>
   <td class="mono ${cls(s.fwd_gpts)}">${f(s.fwd_gpts)}</td><td class="mono ${cls(s.fwd_gross)}">${vm(s.fwd_gross)}</td><td class="mono">${fm(s.fwd_fee)}</td><td class="mono ${cls(s.fwd_net)}"><b>${vm(s.fwd_net)}</b></td>
   <td class="mono">${wr}</td>
@@ -105,11 +105,11 @@ function render(d){
  tbl.querySelector('tbody').innerHTML=h;
  // bang vi the dang mo
  let oh='';for(const o of (d.opens||[])){const sd=o.side=='long'?'▲ Long':'▼ Short';
-  oh+=`<tr><td><b>${o.name}</b></td><td><span class="tag">${o.tf}</span></td><td class="${o.side=='long'?'g':'r'}">${sd}</td><td class="mono">${o.hd}</td><td class="mono">${o.entry}</td><td class="mono">${o.vao}</td><td class="mono ${cls(o.unreal)}">${f(o.unreal)}đ</td><td class="mono ${cls(o.unreal_vnd)}"><b>${vm(o.unreal_vnd)}</b></td></tr>`}
+  oh+=`<tr><td>${o.icon||''} <b>${o.name}</b></td><td><span class="tag">${o.tf}</span></td><td class="${o.side=='long'?'g':'r'}">${sd}</td><td class="mono">${o.hd}</td><td class="mono">${o.entry}</td><td class="mono">${o.vao}</td><td class="mono ${cls(o.unreal)}">${f(o.unreal)}đ</td><td class="mono ${cls(o.unreal_vnd)}"><b>${vm(o.unreal_vnd)}</b></td></tr>`}
  otbl.querySelector('tbody').innerHTML=oh||'<tr><td colspan="8" class="mut">Hiện không có vị thế mở.</td></tr>';
  // chi tiet lenh hom nay
  let dh='';for(const s of d.strats){if(!s.trades||!s.trades.length)continue;
-  dh+=`<details><summary><b>${s.name}</b> · ròng ${vm(s.today_net)} (${s.today_w}-${s.today_l}) · ${s.trades.length} lệnh</summary>`;
+  dh+=`<details><summary>${s.icon||''} <b>${s.name}</b> · ròng ${vm(s.today_net)} (${s.today_w}-${s.today_l}) · ${s.trades.length} lệnh</summary>`;
   for(const x of s.trades){const sd=x.side=='long'?'▲L':'▼S';
    dh+=`<div class="tr">${sd} ${x.vao}→${x.ra} · ${x.epx}→${x.xpx} · <span class="${cls(x.pts)}">${f(x.pts)}đ</span> · ${x.ly}</div>`}
   dh+='</details>'}
