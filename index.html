@@ -18,9 +18,24 @@ details{margin:4px 0}summary{cursor:pointer;color:#7dd3fc;font-size:12px}
 thead .grp{text-align:center;color:#7dd3fc;border-bottom:1px solid #475569;font-size:11px}
 thead tr.subrow th{text-align:right;font-size:10px;color:#93c5fd}
 td.small{font-size:12px}
+.hd{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px}
+.vnbox{background:var(--card);border:1.5px solid #38bdf8;border-radius:12px;padding:8px 20px;text-align:center;min-width:160px}
+.vnbox .l{color:#38bdf8;font-size:12px;font-weight:700;letter-spacing:1px}
+.vnbox .p{font-size:34px;font-weight:800;color:#e2e8f0;line-height:1.05;font-variant-numeric:tabular-nums}
+.vnbox .s{color:var(--mut);font-size:10px}
 </style></head><body>
-<h1>🐆 VN30F Live — Forward Test</h1>
-<div class="mut">Cập nhật: <span id="upd">…</span> · phiên <span id="sess"></span> · go-live <span id="gl"></span> · vốn <span id="cap"></span>/chiến lược · tối đa <span id="ct"></span> HĐ · phí/thuế <span id="cost"></span>/HĐ/vòng · tự làm mới 60s</div>
+<div class="hd">
+ <div>
+  <h1>🐆 VN30F Live — Forward Test</h1>
+  <div class="mut">Dữ liệu đến <b id="dt" style="color:#e2e8f0">…</b> (VN) · phiên <span id="sess"></span> · go-live <span id="gl"></span> · vốn <span id="cap"></span>/chiến lược · tối đa <span id="ct"></span> HĐ · phí/thuế <span id="cost"></span>/HĐ/vòng</div>
+  <div class="mut" style="font-size:11px;margin-top:2px">Sinh báo cáo lúc <span id="upd">…</span> · trang tự làm mới mỗi 60s</div>
+ </div>
+ <div class="vnbox">
+  <div class="l">VN30F1M</div>
+  <div class="p"><span id="vnpx">—</span> <span style="font-size:14px;color:#94a3b8">điểm</span></div>
+  <div class="s">lúc <span id="dt2"></span></div>
+ </div>
+</div>
 <div class="kpi" id="kpi"></div>
 <div class="card"><h3 style="margin:0 0 8px;font-size:14px">Hiệu quả từng chiến lược</h3>
 <div class="scroll"><table id="tbl"><thead>
@@ -43,6 +58,9 @@ async function load(){
 }
 function render(d){
  upd.textContent=d.updated;sess.textContent=d.session_date;gl.textContent=d.go_live;ct.textContent=d.contracts;
+ dt.textContent=d.data_time||'—';
+ vnpx.textContent=(d.vn30f!=null)?d.vn30f.toFixed(1):'—';
+ dt2.textContent=(d.data_time||'').slice(11)||'';
  const m=v=>(v/1e6).toFixed(1)+'tr';
  cap.textContent=(d.start_capital/1e6).toFixed(0)+'tr';
  cost.textContent=Math.round(d.cost_rt_vnd/1e3)+'k';
