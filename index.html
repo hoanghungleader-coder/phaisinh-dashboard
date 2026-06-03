@@ -55,7 +55,7 @@ td.small{font-size:12px}
 </div>
 <div id="tab-strat">
 <div class="kpi" id="kpi"></div>
-<div class="card"><h3 style="margin:0 0 8px;font-size:14px">🐾 Thú săn mồi — 01/06/2026 Bắt đầu săn</h3>
+<div class="card"><h3 id="hunthdr" style="margin:0 0 8px;font-size:14px">🐾 Thú săn mồi — 01/06/2026 Bắt đầu săn</h3>
 <div class="scroll"><table id="tbl"><thead>
 <tr><th rowspan="2">Mã</th><th rowspan="2">TF</th>
 <th class="grp" colspan="4">Lãi/lỗ hôm nay</th><th class="grp" colspan="4">Lũy kế forward</th>
@@ -81,6 +81,8 @@ function showTab(t){
  document.getElementById('tb-p').classList.toggle('on',t=='pack');
 }
 const fwDate=s=>{if(!s)return '—';const p=String(s).split('-');return p.length==3?p[2]+'/'+p[1]+'/'+p[0]:s;};
+const daysHunt=s=>{if(!s)return -999;const g=new Date(s+'T00:00:00');const n=new Date();const t=new Date(n.getFullYear(),n.getMonth(),n.getDate());return Math.floor((t-g)/86400000)+1;};
+const huntLbl=s=>{const n=daysHunt(s);return n>=1?' · Săn được '+n+' ngày':' · sắp đi săn';};
 const f=(x,d=1)=>(x>0?'+':'')+Number(x).toFixed(d);
 const cls=x=>x>0?'g':(x<0?'r':'');
 const vm=v=>{const a=Math.abs(v),sg=v<0?'-':(v>0?'+':'');return a>=1e6?sg+(a/1e6).toFixed(2)+'tr':a>=1e3?sg+Math.round(a/1e3)+'k':sg+Math.round(a);};
@@ -98,6 +100,7 @@ function render(d){
  const m=v=>(v/1e6).toFixed(1)+'tr';
  cap.textContent=(d.start_capital/1e6).toFixed(0)+'tr';
  cost.textContent=Math.round(d.cost_rt_vnd/1e3)+'k';
+ document.getElementById('hunthdr').innerHTML='🐾 Thú săn mồi — '+fwDate(d.go_live)+' Bắt đầu săn'+huntLbl(d.go_live);
  const t=d.totals;
  kpi.innerHTML=`<div>Hôm nay (ròng)<br><b class="${cls(t.today_net)}">${vm(t.today_net)}</b><br><span class="mut">thô ${vm(t.today_gross)} · phí ${fm(t.today_fee)} · ${f(t.today_gpts)}đ · T${t.today_w} B${t.today_l}</span></div>
  <div>Lũy kế forward (ròng)<br><b class="${cls(t.fwd_net)}">${vm(t.fwd_net)}</b><br><span class="mut">thô ${vm(t.fwd_gross)} · phí ${fm(t.fwd_fee)} · ${f(t.fwd_gpts)}đ · T${t.fwd_w} B${t.fwd_l}</span></div>
@@ -144,7 +147,7 @@ function render(d){
  let ah='';
  if(!fw.ok){ah='<div class="mut">Chưa tải được Thú săn mồi'+(fw.err?' ('+fw.err+')':'')+'.</div>';}
  else{
-  ah='<div class="card"><h3 style="margin:0 0 8px;font-size:14px">🐾 Thú săn mồi — '+fwDate(fw.go_live)+' Bắt đầu săn</h3><div class="scroll"><table><thead>'
+  ah='<div class="card"><h3 style="margin:0 0 8px;font-size:14px">🐾 Thú săn mồi — '+fwDate(fw.go_live)+' Bắt đầu săn'+huntLbl(fw.go_live)+'</h3><div class="scroll"><table><thead>'
     +'<tr><th rowspan="2">Con</th><th rowspan="2">TF</th><th class="grp" colspan="4">Lãi/lỗ hôm nay</th><th class="grp" colspan="4">Lũy kế forward</th><th rowspan="2">WR</th><th rowspan="2">Vốn còn lại</th><th rowspan="2">%</th><th rowspan="2">Vị thế</th></tr>'
     +'<tr class="subrow"><th>Điểm</th><th>VNĐ thô</th><th>Phí/thuế</th><th>Ròng</th><th>Điểm</th><th>VNĐ thô</th><th>Phí/thuế</th><th>Ròng</th></tr></thead><tbody>';
   for(const a of (fw.animals||[])){
@@ -164,7 +167,7 @@ function render(d){
  // --- phan 2: 2 tru moi (Song/Tam) -> card RIENG ngay duoi "Luc tru" (tab 2) ---
  let fph='';
  for(const p of (fw.ok?(fw.packs||[]):[])){
-  fph+=`<div class="pk"><h3>🎯 ${p.name} <span style="font-size:13px;color:#94a3b8">· ${p.n} con · đi săn từ ${fwDate(fw.go_live)}</span></h3>
+  fph+=`<div class="pk"><h3>🎯 ${p.name} <span style="font-size:13px;color:#94a3b8">· ${p.n} con · đi săn từ ${fwDate(fw.go_live)}${huntLbl(fw.go_live)}</span></h3>
    <div class="pkmem">${p.members.map(x=>'<span class="pkchip">'+ico(x)+' '+x+'</span>').join('')}</div>
    <div class="pkkpi">
     <div><div class="k">Vốn còn lại</div><b>${m(p.equity)}</b></div>
