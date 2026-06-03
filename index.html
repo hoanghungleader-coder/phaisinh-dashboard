@@ -50,12 +50,12 @@ td.small{font-size:12px}
  </div>
 </div>
 <div class="tabs">
- <button class="tab on" id="tb-s" onclick="showTab('strat')">📊 Từng chiến lược</button>
+ <button class="tab on" id="tb-s" onclick="showTab('strat')">🐾 Từng con thú</button>
  <button class="tab" id="tb-p" onclick="showTab('pack')">🎯 Bầy săn (danh mục)</button>
 </div>
 <div id="tab-strat">
 <div class="kpi" id="kpi"></div>
-<div class="card"><h3 style="margin:0 0 8px;font-size:14px">Hiệu quả từng chiến lược</h3>
+<div class="card"><h3 style="margin:0 0 8px;font-size:14px">🐾 Thú săn mồi — 01/06/2026 Bắt đầu săn</h3>
 <div class="scroll"><table id="tbl"><thead>
 <tr><th rowspan="2">Mã</th><th rowspan="2">TF</th>
 <th class="grp" colspan="4">Lãi/lỗ hôm nay</th><th class="grp" colspan="4">Lũy kế forward</th>
@@ -144,8 +144,7 @@ function render(d){
  let ah='';
  if(!fw.ok){ah='<div class="mut">Chưa tải được Thú săn mồi'+(fw.err?' ('+fw.err+')':'')+'.</div>';}
  else{
-  ah='<div class="hunt2">🐾 THÚ SĂN MỒI — bắt đầu đi săn <b>'+fwDate(fw.go_live)+'</b>. Vốn mỗi con 100tr · 2 HĐ · phí 0.50đ/vòng. Thành tích chỉ tính TỪ ngày đi săn.</div>'
-    +'<div class="card"><h3 style="margin:0 0 8px;font-size:14px">🐾 Thú săn mồi — '+fwDate(fw.go_live)+' Bắt đầu săn</h3><div class="scroll"><table><thead>'
+  ah='<div class="card"><h3 style="margin:0 0 8px;font-size:14px">🐾 Thú săn mồi — '+fwDate(fw.go_live)+' Bắt đầu săn</h3><div class="scroll"><table><thead>'
     +'<tr><th rowspan="2">Con</th><th rowspan="2">TF</th><th class="grp" colspan="4">Lãi/lỗ hôm nay</th><th class="grp" colspan="4">Lũy kế forward</th><th rowspan="2">WR</th><th rowspan="2">Vốn còn lại</th><th rowspan="2">%</th><th rowspan="2">Vị thế</th></tr>'
     +'<tr class="subrow"><th>Điểm</th><th>VNĐ thô</th><th>Phí/thuế</th><th>Ròng</th><th>Điểm</th><th>VNĐ thô</th><th>Phí/thuế</th><th>Ròng</th></tr></thead><tbody>';
   for(const a of (fw.animals||[])){
@@ -164,19 +163,19 @@ function render(d){
  document.getElementById('fwdanimals').innerHTML=ah;
  // --- phan 2: 2 tru moi (Song/Tam) -> card RIENG ngay duoi "Luc tru" (tab 2) ---
  let fph='';
- if(fw.ok && (fw.packs||[]).length){
-  fph='<div class="hunt2">🆕 BẦY MỚI (Sổ 1, breakout/momentum) — bắt đầu đi săn <b>'+fwDate(fw.go_live)+'</b>. Mỗi thành viên 2 HĐ; số <b>base</b> là tham chiếu ~7.8 năm, cột forward tính từ ngày đi săn.</div>';
-  for(const p of (fw.packs||[])){
-   fph+='<div class="pk"><h3>🎯 '+p.name+' <span style="font-size:13px;color:#94a3b8">· '+p.members.length+' con · đi săn từ '+fwDate(fw.go_live)+'</span></h3>'
-     +'<div class="pkmem">'+p.members.map(x=>'<span class="pkchip">'+ico(x)+' '+x+'</span>').join('')+'</div>'
-     +'<div class="pkkpi">'
-     +'<div><div class="k">dSharpe (ngày)</div><b>'+p.base_dsharpe.toFixed(2)+'</b> <span class="mut" style="font-size:11px">HO '+p.base_ho.toFixed(2)+'</span></div>'
-     +'<div><div class="k">+tr/năm (base)</div><b class="g">+'+p.base_vnd_yr.toFixed(1)+'</b></div>'
-     +'<div><div class="k">MaxDD</div><b class="r">'+p.base_mdd_tr.toFixed(1)+'</b></div>'
-     +'<div><div class="k">Calmar</div><b>'+p.base_calmar.toFixed(2)+'</b></div>'
-     +'<div><div class="k">Forward</div><b class="'+cls(p.fwd_pts)+'">'+f(p.fwd_pts)+'đ</b> <span class="mut" style="font-size:11px">'+p.fwd_n+' lệnh</span></div>'
-     +'</div></div>';
-  }
+ for(const p of (fw.ok?(fw.packs||[]):[])){
+  fph+=`<div class="pk"><h3>🎯 ${p.name} <span style="font-size:13px;color:#94a3b8">· ${p.n} con · đi săn từ ${fwDate(fw.go_live)}</span></h3>
+   <div class="pkmem">${p.members.map(x=>'<span class="pkchip">'+ico(x)+' '+x+'</span>').join('')}</div>
+   <div class="pkkpi">
+    <div><div class="k">Vốn còn lại</div><b>${m(p.equity)}</b></div>
+    <div><div class="k">Lãi/lỗ ròng (forward)</div><b class="${cls(p.fwd_net)}">${vm(p.fwd_net)}</b></div>
+    <div><div class="k">% lời/lỗ</div><b class="${cls(p.ret_pct)}">${f(p.ret_pct,2)}%</b></div>
+    <div><div class="k">Hôm nay</div><b class="${cls(p.today_net)}">${vm(p.today_net)}</b></div>
+    <div><div class="k">Thô · Phí</div><b style="font-size:14px">${vm(p.fwd_gross)} · ${fm(p.fwd_fee)}</b></div>
+    <div><div class="k">WR (T-B)</div><b>${p.wr!=null?p.wr+'%':'–'} <span style="font-size:12px;color:#94a3b8">${p.fwd_w}-${p.fwd_l}</span></b></div>
+    <div><div class="k">Vốn gốc</div><b style="color:#94a3b8">${m(p.cap)}</b></div>
+    <div><div class="k">Vị thế mở</div><b>${p.n_open}</b></div>
+   </div></div>`;
  }
  document.getElementById('fwdpacks').innerHTML=fph;
 }
