@@ -165,7 +165,8 @@ function render(d){
  // --- phan 2: 2 tru moi (Song/Tam) -> card RIENG ngay duoi "Luc tru" (tab 2) ---
  let fph='';
  for(const p of (fw.ok?(fw.packs||[]):[])){
-  fph+=`<div class="pk"><h3>🎯 ${p.name} <span style="font-size:13px;color:#94a3b8">· ${p.n} con · đi săn từ ${fwDate(fw.go_live)}${huntLbl(fw.go_live)}</span></h3>
+  const _gl=p.go_live||fw.go_live;
+  fph+=`<div class="pk"><h3>🎯 ${p.name} <span style="font-size:13px;color:#94a3b8">· ${p.n} con · đi săn từ ${fwDate(_gl)}${huntLbl(_gl)}</span></h3>
    <div class="pkmem">${p.members.map(x=>'<span class="pkchip">'+ico(x)+' '+x+'</span>').join('')}</div>
    <div class="pkkpi">
     <div><div class="k">Vốn còn lại</div><b>${m(p.equity)}</b></div>
