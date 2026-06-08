@@ -1,4 +1,5 @@
 <!doctype html><html lang="vi"><head><meta charset="utf-8">
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>VN30F Live</title>
 <style>
@@ -95,13 +96,20 @@ function renderBay8Book(p){
  const bk=p.bay8_book;
  const sideTag=s=>s==='long'?'<span class="g">▲ Long</span>':'<span class="r">▼ Short</span>';
  const reasonTag=r=>{const cls=(r==='stop'||r==='take')?(r==='stop'?'r':'g'):'mut';return `<span class="${cls}">${r}</span>`;};
- // 1) SO LENH HIEN TAI (vi the dang mo)
+ // 1) SO LENH HIEN TAI (vi the dang mo) — format giong bang "Vi the dang mo" chinh
  let oh='';
  for(const o of (bk.open||[])){
-  oh+=`<tr><td>${o.alias}</td><td>${sideTag(o.side)}</td><td class="mono">${o.contracts}</td><td class="mono">${o.entry_price}</td><td class="mono">${o.entry_time}</td></tr>`;
+  const sd=o.side=='long'?'▲ Long':'▼ Short';
+  const vaoHM=(o.entry_time||'').slice(11) || (o.entry_time||'').slice(8,10)+' '+(o.entry_time||'').slice(11,16);
+  // unrealized_pts/vnd duoc dashboard_datapro mark realtime; ban DNSE co the chua co -> hien '–'
+  const upts=o.unrealized_pts;
+  const uvnd=o.unrealized_vnd;
+  const uptsCell=(upts==null)?'<span class="mut">–</span>':`<span class="${cls(upts)}">${f(upts)}đ</span>`;
+  const uvndCell=(uvnd==null)?'<span class="mut">–</span>':`<b class="${cls(uvnd)}">${vm(uvnd)}</b>`;
+  oh+=`<tr><td>${o.alias}</td><td class="${o.side=='long'?'g':'r'}">${sd}</td><td class="mono">${o.contracts}</td><td class="mono">${o.entry_price}</td><td class="mono">${vaoHM}</td><td class="mono">${uptsCell}</td><td class="mono">${uvndCell}</td></tr>`;
  }
  const openTbl=`<div style="margin-top:14px"><b>📋 Sổ lệnh hiện tại (vị thế đang mở)</b>
-  <table style="margin-top:6px;font-size:12px"><thead><tr><th>Con</th><th>Hướng</th><th>HĐ</th><th>Giá vào</th><th>Lúc</th></tr></thead><tbody>${oh||'<tr><td colspan="5" class="mut" style="text-align:center;padding:8px">Hiện chưa có vị thế mở (force_close_eod hoặc ngoài giờ phiên).</td></tr>'}</tbody></table></div>`;
+  <table style="margin-top:6px;font-size:12px"><thead><tr><th>Con</th><th>Chiều</th><th>Số HĐ</th><th>Giá vào</th><th>Giờ vào</th><th>Lãi/lỗ (điểm)</th><th>Lãi/lỗ tạm tính (VNĐ)</th></tr></thead><tbody>${oh||'<tr><td colspan="7" class="mut" style="text-align:center;padding:8px">Hiện chưa có vị thế mở (force_close_eod hoặc ngoài giờ phiên).</td></tr>'}</tbody></table></div>`;
  // 2) LENH DONG PHIEN GAN NHAT
  let th='';
  let totalT=0;
