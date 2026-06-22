@@ -47,15 +47,20 @@ td.small{font-size:12px}
 .pls{width:8px;height:8px;border-radius:50%;background:var(--g);display:inline-block;vertical-align:middle;margin-right:6px;animation:pulse 1.8s ease-in-out infinite}
 .hero{border-color:var(--gold2)}
 .empty{color:var(--mut);text-align:center;padding:14px;font-size:13px}
-.oplist{margin-top:2px}
-.oprow{display:flex;align-items:center;gap:11px;padding:9px 2px;border-top:1px solid #1A2230}
-.oprow:first-child{border-top:0}
-.opic{width:27px;height:27px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;background:#1B2735;line-height:1}
-.opic.g{background:rgba(22,199,132,.13)}.opic.r{background:rgba(234,57,67,.13)}
-.opmid{flex:1;min-width:0}.opname{display:flex;align-items:center;gap:7px;font-size:13px;flex-wrap:wrap}
-.opsub{color:var(--mut);font-size:11px;margin-top:2px}
-.oppill{font-size:11px;font-weight:600;border-radius:6px;padding:1px 7px}.oppill.g{color:var(--g);background:rgba(22,199,132,.13)}.oppill.r{color:var(--r);background:rgba(234,57,67,.13)}
-.opval{text-align:right;flex-shrink:0}.opval b{font-size:13px}.opd{font-size:11px;color:var(--mut);margin-top:1px}
+.oplist{--opc:150px 48px 74px 90px 40px 74px 84px 96px 104px;margin-top:2px;overflow-x:auto}
+.opth,.oprow{display:grid;grid-template-columns:var(--opc);justify-content:space-between;column-gap:14px;align-items:center}
+.opth{padding:6px 10px 8px;border-bottom:1px solid var(--bd)}
+.opth span{font-size:11px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:var(--gold2);white-space:nowrap}
+.oprow{padding:12px 10px;border-bottom:1px solid #161D29;border-radius:9px;transition:background .12s ease}
+.oprow:last-child{border-bottom:0}
+.opic{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px;background:#1B2735;line-height:1}
+.opic.g{background:rgba(22,199,132,.14)}.opic.r{background:rgba(234,57,67,.14)}
+.opnm{display:flex;align-items:center;gap:10px;min-width:0}.opnm b{font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ac{text-align:center}.ar{text-align:right}
+.pill{font-size:11px;font-weight:600;border-radius:6px;padding:3px 0;display:inline-block;width:58px;text-align:center}
+.pill.g{color:var(--g);background:rgba(22,199,132,.14)}.pill.r{color:var(--r);background:rgba(234,57,67,.14)}
+.num{font-size:13px}.pts{font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}.vdate{color:var(--mut)}
+.opval{text-align:right}.opval b{font-size:14.5px;font-weight:700}
 :root{--bd2:#2A3543;--faint:#5B6675}
 *{-webkit-tap-highlight-color:transparent}
 body{font-feature-settings:"tnum" 1,"cv01" 1}
@@ -65,13 +70,12 @@ body{font-feature-settings:"tnum" 1,"cv01" 1}
 .kpi div{transition:border-color .15s ease}.kpi div:hover{border-color:var(--bd2)}
 td,th{border-bottom-color:rgba(255,255,255,.05)}
 tbody tr{transition:background .12s ease}tbody tr:hover{background:rgba(255,255,255,.022)}
-.oprow{transition:background .12s ease;border-radius:9px;padding-left:8px;padding-right:8px}
-.oprow:hover{background:rgba(255,255,255,.02)}
+.oprow:hover{background:rgba(255,255,255,.03)}
 .pkchip{transition:border-color .15s ease,color .15s ease}.pkchip:hover{border:1px solid var(--bd2);color:var(--tx)}
 .pk{transition:border-color .15s ease}.pk:hover{border-color:var(--bd2)}
 .spark{vertical-align:middle;opacity:.92}.wrbar{display:block;height:5px;background:#1B2735;border-radius:3px;overflow:hidden;width:50px}.wrbar>i{display:block;height:100%;border-radius:3px;transition:width .3s ease}.wrcell{display:inline-flex;flex-direction:column;align-items:flex-end;gap:3px;font-variant-numeric:tabular-nums;font-size:13px}
 @media(max-width:768px){.vnbox{padding:6px 14px}.vnbox .p{font-size:28px}.pkkpi>div{min-width:calc(50% - 6px)}}
-@media(max-width:480px){body{padding:9px}.kpi{gap:8px}.kpi div{min-width:calc(50% - 4px);padding:9px 11px}.kpi b{font-size:18px}.vnbox .p{font-size:24px}h1{font-size:16px}.opname{font-size:12px}.card{padding:12px 13px}}
+@media(max-width:480px){body{padding:9px}.kpi{gap:8px}.kpi div{min-width:calc(50% - 4px);padding:9px 11px}.kpi b{font-size:18px}.vnbox .p{font-size:24px}h1{font-size:16px}.card{padding:12px 13px}.oplist{--opc:108px 40px 58px 72px 32px 58px 68px 80px 88px;column-gap:9px}.opth span{font-size:10px}}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
 .logo{width:34px;height:34px;border-radius:9px;background:var(--gold-grad);color:#0A0E14;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;flex-shrink:0;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),inset 0 -2px 5px rgba(120,80,0,.28)}
 .goldtext{background:var(--gold-grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
@@ -221,9 +225,10 @@ function render(d){
   <td class="mono"><b>${m(s.equity)}</b></td><td class="mono ${cls(s.ret_pct)}">${f(s.ret_pct,2)}%</td></tr>`}
  tbl.querySelector('tbody').innerHTML=h;updSortArrows();
  // bang vi the dang mo
- let oh='';for(const o of (d.opens||[])){const lg=o.side=='long';const cur=lg?(o.entry+o.unreal):(o.entry-o.unreal);
-  oh+=`<div class="oprow"><div class="opic ${lg?'g':'r'}">${ico(o.name)||(lg?'▲':'▼')}</div><div class="opmid"><div class="opname"><b>${o.name}</b> <span class="tag">${o.tf}</span> <span class="oppill ${lg?'g':'r'}">${lg?'Long':'Short'}</span></div><div class="opsub mono">vào ${o.vao} · ${o.hd} HĐ · ${o.entry} <span style="color:var(--mut)">→</span> ${cur.toFixed(1)}</div></div><div class="opval"><b class="${cls(o.unreal_vnd)}">${vm(o.unreal_vnd)}</b><div class="opd mono ${cls(o.unreal)}">${f(o.unreal)}đ</div></div></div>`}
- otbl.innerHTML=oh||('<div class="empty">'+(isExpiry(d.session_date)?'🏁 Đã settle đáo hạn — vào lại phiên sau với hợp đồng mới.':'Chưa có vị thế mở — sẽ hiện ngay khi chiến lược vào lệnh.')+'</div>');
+ let oh='';for(const o of (d.opens||[])){const lg=o.side=='long';const _e=new Date((o.entry_ts||'').replace(' ','T')),_n=new Date((d.data_time||'').replace(' ','T'));let _hold='—';if(o.entry_ts&&!isNaN(_e)&&!isNaN(_n)){const _m=Math.max(0,Math.round((_n-_e)/6e4));_hold=_m>=1440?Math.floor(_m/1440)+'n'+Math.floor(_m%1440/60)+'h':(_m>=60?Math.floor(_m/60)+'h'+String(_m%60).padStart(2,'0'):_m+'′');}
+  oh+=`<div class="oprow"><div class="opnm"><span class="opic ${lg?'g':'r'}">${ico(o.name)||(lg?'▲':'▼')}</span><b>${o.name}</b></div><div class="ac"><span class="tag">${o.tf}</span></div><div class="ac"><span class="pill ${lg?'g':'r'}">${lg?'Long':'Short'}</span></div><div class="ac num mono">${o.entry_ts?`<span class="vdate">${o.entry_ts.slice(8,10)}/${o.entry_ts.slice(5,7)}</span> ${o.entry_ts.slice(11,16)}`:o.vao}</div><div class="ac num mono">${o.hd}</div><div class="ar num mono">${(+o.entry).toFixed(1)}</div><div class="ac num mono">${_hold}</div><div class="ar pts mono ${cls(o.unreal)}">${f(o.unreal)}đ</div><div class="ar opval"><b class="${cls(o.unreal_vnd)}">${vm(o.unreal_vnd)}</b></div></div>`}
+ const ophd='<div class="opth"><span>Con</span><span class="ac">Khung</span><span class="ac">Hướng</span><span class="ac">Vào</span><span class="ac">HĐ</span><span class="ar">Giá vào</span><span class="ac">Giữ</span><span class="ar">Lãi/lỗ (điểm)</span><span class="ar">P&amp;L tạm tính</span></div>';
+ otbl.innerHTML=oh?(ophd+oh):('<div class="empty">'+(isExpiry(d.session_date)?'🏁 Đã settle đáo hạn — vào lại phiên sau với hợp đồng mới.':'Chưa có vị thế mở — sẽ hiện ngay khi chiến lược vào lệnh.')+'</div>');
  const _no=(d.opens||[]).length,_su=(d.opens||[]).reduce((a,o)=>a+(o.unreal_vnd||0),0);
  document.getElementById('osum').innerHTML=_no?(_no+' vị thế · tạm tính <b class="'+cls(_su)+'">'+vm(_su)+'</b>'):'';
  // chi tiet lenh hom nay
