@@ -266,13 +266,19 @@ function render(d){
   for(const a of (fw.animals||[])){
    if(!a.ok){ah+='<tr><td>'+ico(a.name)+' '+a.name+'</td><td>'+a.tf+'</td><td colspan="11" class="r">lỗi: '+a.err+'</td></tr>';continue;}
    const wr=(a.fwd_w+a.fwd_l)?Math.round(100*a.fwd_w/(a.fwd_w+a.fwd_l))+'%':'–';
-   ah+=`<tr><td>${ico(a.name)} <b>${a.name}</b></td><td><span class="tag">${a.tf}</span></td>
+   ah+=`<tr><td><span style="white-space:nowrap">${ico(a.name)} <b>${a.name}</b></span><br><span title="Equity forward: ${vm(a.fwd_net)} · ${a.fwd_n} lệnh" style="cursor:help">${spark(a.curve,a.fwd_net>0)}</span></td><td><span class="tag">${a.tf}</span></td>
    <td class="mono ${cls(a.today_gpts)}">${f(a.today_gpts)}</td><td class="mono ${cls(a.today_gross)}">${vm(a.today_gross)}</td><td class="mono">${fm(a.today_fee)}</td><td class="mono ${cls(a.today_net)}"><b>${vm(a.today_net)}</b></td>
    <td class="mono ${cls(a.fwd_gpts)}">${f(a.fwd_gpts)}</td><td class="mono ${cls(a.fwd_gross)}">${vm(a.fwd_gross)}</td><td class="mono">${fm(a.fwd_fee)}</td><td class="mono ${cls(a.fwd_net)}"><b>${vm(a.fwd_net)}</b></td>
    <td class="mono">${wr}</td>
    <td class="mono"><b>${m(a.equity)}</b></td><td class="mono ${cls(a.ret_pct)}">${f(a.ret_pct,2)}%</td></tr>`;
   }
-  ah+='</tbody></table></div><div class="mut" style="margin-top:6px">Thành tích tính từ ngày đi săn ('+fwDate(fw.go_live)+'); mỗi con 2 HĐ, phí 0.50đ/vòng. Vị thế đang mở của 3 con xem ở bảng "Vị thế đang mở" bên dưới (chỉ hiện khi VÀO lệnh từ ngày đi săn).</div></div>';
+  ah+='</tbody></table></div>';
+  // bang CHI TIET LENH DONG HOM NAY cua 3 con standalone (khop voi cot today_net)
+  let _tdh='';let _totTd=0;
+  for(const a of (fw.animals||[])){if(!a.ok)continue;for(const t of (a.today||[])){_totTd+=t.pnl_vnd||0;
+    _tdh+=`<tr><td>${ico(a.name)} ${a.name}</td><td>${t.side=='long'?'<span class="g">▲ Long</span>':'<span class="r">▼ Short</span>'}</td><td class="mono">${(t.entry_time||'').slice(11)}</td><td class="mono">${t.entry==null?'–':t.entry}</td><td class="mono">${(t.exit_time||'').slice(11)}</td><td class="mono">${t.exit==null?'–':t.exit}</td><td>${t.reason=='stop'?'<span class="r">stop</span>':(t.reason=='take'?'<span class="g">take</span>':'<span class="mut">'+t.reason+'</span>')}</td><td class="mono ${cls(t.pnl_pts)}">${f(t.pnl_pts,2)}đ</td><td class="mono ${cls(t.pnl_vnd)}"><b>${vm(t.pnl_vnd)}</b></td></tr>`;}}
+  ah+=`<div style="margin-top:10px"><b>📜 Lệnh đóng hôm nay (3 con)</b> <span class="mut">— tổng ${vm(_totTd)}</span><div class="scroll"><table style="font-size:12px"><thead><tr><th>Con</th><th>Hướng</th><th>Vào lúc</th><th>Giá vào</th><th>Ra lúc</th><th>Giá ra</th><th>Lý do</th><th>PnL điểm</th><th>PnL VND</th></tr></thead><tbody>${_tdh||'<tr><td colspan="9" class="mut" style="text-align:center;padding:8px">Hôm nay 3 con chưa đóng lệnh nào (có thể đang giữ vị thế mở).</td></tr>'}</tbody></table></div></div>`;
+  ah+='<div class="mut" style="margin-top:6px">Thành tích tính từ ngày đi săn ('+fwDate(fw.go_live)+'); mỗi con 2 HĐ, phí 0.50đ/vòng. Vị thế đang mở của 3 con xem ở bảng "Vị thế đang mở" bên dưới (chỉ hiện khi VÀO lệnh từ ngày đi săn).</div></div>';
  }
  document.getElementById('fwdanimals').innerHTML=ah;
  // --- phan 2: 2 tru moi (Song/Tam) -> card RIENG ngay duoi "Luc tru" (tab 2) ---
