@@ -242,6 +242,7 @@ function render(d){
  let ph='';for(const p of (d.packs||[])){
   ph+=`<div class="pk"><h3>🎯 ${p.name} <span style="font-size:13px;color:#94a3b8">· ${p.n} con</span></h3>
    <div class="pkmem">${p.members.map(x=>'<span class="pkchip">'+ico(x)+' '+x+'</span>').join('')}</div>
+   ${(p.curve&&p.curve.length>1)?`<div style="margin:2px 0 8px;display:flex;align-items:center;gap:8px"><span class="mut" style="font-size:12px">Đường vốn (forward)</span>${spark(p.curve,(p.fwd_net||0)>0)}</div>`:''}
    <div class="pkkpi">
     <div><div class="k">Vốn còn lại</div><b>${m(p.equity)}</b></div>
     <div><div class="k">Lãi/lỗ ròng (forward)</div><b class="${cls(p.fwd_net)}">${vm(p.fwd_net)}</b></div>
@@ -287,6 +288,7 @@ function render(d){
   const _gl=p.go_live||fw.go_live;
   fph+=`<div class="pk"><h3>🎯 ${p.name} <span style="font-size:13px;color:#94a3b8">· ${p.n} con · đi săn từ ${fwDate(_gl)}${huntLbl(_gl)}</span></h3>
    <div class="pkmem">${p.members.map(x=>'<span class="pkchip">'+ico(x)+' '+x+'</span>').join('')}</div>
+   ${(p.curve&&p.curve.length>1)?`<div style="margin:2px 0 8px;display:flex;align-items:center;gap:8px"><span class="mut" style="font-size:12px">Đường vốn (forward)</span>${spark(p.curve,(p.fwd_net||0)>0)}</div>`:''}
    <div class="pkkpi">
     <div><div class="k">Vốn còn lại</div><b>${m(p.equity)}</b></div>
     <div><div class="k">Lãi/lỗ ròng (forward)</div><b class="${cls(p.fwd_net)}">${vm(p.fwd_net)}</b></div>
