@@ -237,6 +237,12 @@ function render(d){
   for(const x of s.trades){const sd=x.side=='long'?'▲L':'▼S';
    dh+=`<div class="tr">${sd} ${x.vao}→${x.ra} · ${x.epx}→${x.xpx} · <span class="${cls(x.pts)}">${f(x.pts)}đ</span> · ${x.ly}</div>`}
   dh+='</details>'}
+ // ⭐ gom them 3 con "Thu san moi" (standalone, tu 04/06) vao CHUNG the chi tiet lenh hom nay
+ for(const a of ((d.forward&&d.forward.ok)?(d.forward.animals||[]):[])){if(!a.ok||!a.today||!a.today.length)continue;
+  dh+=`<details><summary>${ico(a.name)} <b>${a.name}</b> · ròng ${vm(a.today_net)} (${a.today_w}-${a.today_l}) · ${a.today.length} lệnh</summary>`;
+  for(const x of a.today){const sd=x.side=='long'?'▲L':'▼S';const _vao=(x.entry_time||'').slice(11,16),_ra=(x.exit_time||'').slice(11,16);
+   dh+=`<div class="tr">${sd} ${_vao}→${_ra} · ${x.entry==null?'–':x.entry}→${x.exit==null?'–':x.exit} · <span class="${cls(x.pnl_pts)}">${f(x.pnl_pts)}đ</span> · ${x.reason}</div>`}
+  dh+='</details>'}
  det.innerHTML=dh||'<span class="mut">Hôm nay chưa có lệnh đóng.</span>';
  // bay san (danh muc)
  let ph='';for(const p of (d.packs||[])){
