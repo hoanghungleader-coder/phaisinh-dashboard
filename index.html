@@ -127,7 +127,7 @@ thead{position:sticky;top:0;z-index:2}thead th{background:var(--card)}
 <div class="card"><h3 style="margin:0 0 8px;font-size:14px">Chi tiết lệnh hôm nay</h3><div id="det"></div></div>
 </div><!-- /tab-strat -->
 <div id="tab-pack" style="display:none">
- <div class="mut" style="margin:4px 0 10px">Các "bầy" = ghép nhiều chiến lược ÍT TƯƠNG QUAN (khác họ alpha) để đa dạng hoá. Mỗi thành viên = 1 sleeve 2 HĐ / vốn 100tr. Hiệu quả tính FORWARD từ go-live.</div>
+ <div class="mut" style="margin:4px 0 10px">Các "bầy" = ghép nhiều chiến lược ÍT TƯƠNG QUAN (khác họ alpha) để đa dạng hoá. Mỗi thành viên = 1 sleeve 2 HĐ / vốn 100tr. Hiệu quả tính FORWARD từ go-live. <b style="color:#fbbf24">⚠ Mỗi bầy là một RỔ VỐN ĐỘC LẬP — KHÔNG cộng dồn "Vốn gốc" giữa các thẻ</b> (cùng 1 chiến lược có thể nằm ở nhiều bầy; cộng dồn = vốn ẢO).</div>
  <div id="packs"></div>
  <div id="fwdpacks" style="margin-top:10px"></div>
 </div>
@@ -236,6 +236,12 @@ function render(d){
   dh+=`<details><summary>${ico(s.name)} <b>${s.name}</b> · ròng ${vm(s.today_net)} (${s.today_w}-${s.today_l}) · ${s.trades.length} lệnh</summary>`;
   for(const x of s.trades){const sd=x.side=='long'?'▲L':'▼S';
    dh+=`<div class="tr">${sd} ${x.vao}→${x.ra} · ${x.epx}→${x.xpx} · <span class="${cls(x.pts)}">${f(x.pts)}đ</span> · ${x.ly}</div>`}
+  dh+='</details>'}
+ // ⭐ gom them 3 con "Thu san moi" (standalone, tu 04/06) vao CHUNG the chi tiet lenh hom nay
+ for(const a of ((d.forward&&d.forward.ok)?(d.forward.animals||[]):[])){if(!a.ok||!a.today||!a.today.length)continue;
+  dh+=`<details><summary>${ico(a.name)} <b>${a.name}</b> · ròng ${vm(a.today_net)} (${a.today_w}-${a.today_l}) · ${a.today.length} lệnh</summary>`;
+  for(const x of a.today){const sd=x.side=='long'?'▲L':'▼S';const _vao=(x.entry_time||'').slice(11,16),_ra=(x.exit_time||'').slice(11,16);
+   dh+=`<div class="tr">${sd} ${_vao}→${_ra} · ${x.entry==null?'–':x.entry}→${x.exit==null?'–':x.exit} · <span class="${cls(x.pnl_pts)}">${f(x.pnl_pts)}đ</span> · ${x.reason}</div>`}
   dh+='</details>'}
  det.innerHTML=dh||'<span class="mut">Hôm nay chưa có lệnh đóng.</span>';
  // bay san (danh muc)
