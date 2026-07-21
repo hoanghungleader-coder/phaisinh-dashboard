@@ -194,7 +194,7 @@ function renderBay8Book(p){
   hh+=`<tr><td>${t.alias}</td><td>${sideTag(t.side)}</td><td class="mono">${t.entry_time}</td><td class="mono">${t.entry_price}</td><td class="mono">${t.exit_time}</td><td class="mono">${t.exit_price}</td><td>${reasonTag(t.exit_reason)}</td><td class="mono ${cls(t.pnl_pts)}">${f(t.pnl_pts,2)}đ</td><td class="mono ${cls(t.pnl_vnd)}"><b>${vm(t.pnl_vnd)}</b></td></tr>`;
  }
  const wrFw=(fwW+fwL)?Math.round(100*fwW/(fwW+fwL))+'%':'–';
- const histTbl=`<div style="margin-top:10px"><b>📚 Lịch sử lệnh Bầy 8 (từ ngày đi săn ${p.go_live})</b> <span class="mut">— ${(bk.history||[]).length} lệnh, T${fwW}/B${fwL} WR ${wrFw}, tổng ${vm(totalF)}</span>
+ const histTbl=`<div style="margin-top:10px"><b>📚 Lịch sử lệnh ${p.name||'Bầy 8'} (từ ngày đi săn ${p.go_live})</b> <span class="mut">— ${(bk.history||[]).length} lệnh, T${fwW}/B${fwL} WR ${wrFw}, tổng ${vm(totalF)}</span>
   <div style="max-height:400px;overflow-y:auto;margin-top:6px"><table style="font-size:12px"><thead><tr><th>Con</th><th>Hướng</th><th>Vào lúc</th><th>Giá vào</th><th>Ra lúc</th><th>Giá ra</th><th>Lý do</th><th>PnL điểm</th><th>PnL VND</th></tr></thead><tbody>${hh||'<tr><td colspan="9" class="mut" style="text-align:center;padding:8px">Chưa có lệnh forward nào (chờ T2 09:00 mai mở phiên đầu).</td></tr>'}</tbody></table></div></div>`;
  return openTbl+todayTbl+histTbl;
 }
@@ -292,7 +292,7 @@ function render(d){
  let fph='';
  for(const p of (fw.ok?(fw.packs||[]):[])){
   const _gl=p.go_live||fw.go_live;
-  fph+=`<div class="pk"><h3>🎯 ${p.name} <span style="font-size:13px;color:#94a3b8">· ${p.n} con · đi săn từ ${fwDate(_gl)}${huntLbl(_gl)}</span></h3>
+  fph+=`<div class="pk"><h3>🎯 ${p.name}${p.sim?' <span style="font-size:11px;background:#7c3f00;color:#ffcf70;border:1px solid #a9631a;border-radius:6px;padding:1px 7px;font-weight:600;vertical-align:middle" title="Số mô phỏng từ backtest trên giá thật — KHÔNG phải số dư tài khoản thật">MÔ PHỎNG</span>':''} <span style="font-size:13px;color:#94a3b8">· ${p.n} con · đi săn từ ${fwDate(_gl)}${huntLbl(_gl)}</span></h3>
    <div class="pkmem">${p.members.map(x=>'<span class="pkchip">'+ico(x)+' '+x+'</span>').join('')}</div>
    ${(p.curve&&p.curve.length>1)?`<div style="margin:2px 0 8px;display:flex;align-items:center;gap:8px"><span class="mut" style="font-size:12px">Đường vốn (forward)</span>${spark(p.curve,(p.fwd_net||0)>0)}</div>`:''}
    <div class="pkkpi">
