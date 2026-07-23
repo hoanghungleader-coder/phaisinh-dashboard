@@ -164,19 +164,19 @@ function renderBay8Book(p){
  if(p.net_twin){
   const nt=p.net_twin, np=nt.net_paper, nr=nt.net_real, fr=nt.real_fresh;
   const sHD=v=>(v==null?'—':(v>0?'+':'')+v+' HĐ');
+  const trc=v=>v==null?'<span class="mut">—</span>':'<b class="'+cls(v)+'">'+f(v,2)+'tr</b>';
   const dvN=(np!=null&&nr!=null&&fr)?(np-nr):null;                 // lech vi the (HD)
-  const realN=fr?(nr==null?'<span class="mut">—</span>':'<b>'+sHD(nr)+'</b>'):'<span class="mut">N/A (bot chưa chạy)</span>';
-  const rp=(fr?nt.real_pnl_tr:null);
-  const pnlCell=(rp!=null)?('<b class="'+cls(rp)+'">'+f(rp,2)+'tr</b>'):'<span class="mut">—</span>';
+  const realN=fr?(nr==null?'<span class="mut">—</span>':'<b>'+sHD(nr)+'</b>'):'<span class="mut">N/A</span>';
+  const pp=nt.paper_pnl_tr, rp=(fr?nt.real_pnl_tr:null);
+  const slip=(pp!=null&&rp!=null)?(rp-pp):null;                    // truot gia = that - ly thuyet NET
+  const fs=nt.fee_saved_tr, td='style="border:none;padding:3px 15px 3px 0"';
   ntw=`<div style="background:#0a1420;border:1px solid var(--bd2);border-radius:8px;padding:9px 12px;margin:10px 0 4px">
-   <div style="font-size:11.5px;color:var(--mut);margin-bottom:6px;letter-spacing:.3px">⚖️ VỊ THẾ: LÝ THUYẾT vs THỰC TẾ${(fr&&nt.real_ts)?' <span style="font-size:11px">· '+nt.real_ts+'</span>':''}</div>
-   <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:baseline;font-size:13px">
-    <div>NET lý thuyết: <b style="color:var(--gold)">${sHD(np)}</b></div>
-    <div>NET thực tế: ${realN}</div>
-    ${dvN!=null?`<div>Lệch: <b class="${dvN==0?'g':'r'}">${dvN>0?'+':''}${dvN} HĐ ${dvN==0?'✓':'⚠'}</b></div>`:''}
-    <div class="mut">· P&L thật hôm nay: ${pnlCell}</div>
-   </div>
-   ${(dvN!=null&&dvN!=0)?`<div class="mut" style="font-size:11px;margin-top:5px">Vị thế lệch ${dvN} HĐ = lệnh cuối phiên bị từ chối/chưa fill → tự khớp ~09:00 phiên sau.</div>`:`<div class="mut" style="font-size:11px;margin-top:5px">Vị thế khớp ✓. So P&L lý thuyết vs thực tế (trượt giá + độ sát): xem báo cáo diag 15:30 hằng ngày.</div>`}
+   <div style="font-size:11.5px;color:var(--mut);margin-bottom:6px;letter-spacing:.3px">⚖️ NET LÝ THUYẾT (cơ chế net như bot) vs THỰC TẾ${(fr&&nt.real_ts)?' <span style="font-size:11px">· '+nt.real_ts+'</span>':''}</div>
+   <table style="width:auto;font-size:12.5px;border:none;margin:0"><tbody>
+    <tr><td ${td} class="mut">Vị thế NET</td><td ${td}>LT <b style="color:var(--gold)">${sHD(np)}</b></td><td ${td}>Thật ${realN}</td><td style="border:none;padding:3px 0">${dvN!=null?('lệch <b class="'+(dvN==0?'g':'r')+'">'+(dvN>0?'+':'')+dvN+' HĐ '+(dvN==0?'✓':'⚠')+'</b>'):''}</td></tr>
+    <tr><td ${td} class="mut">P&L hôm nay (NET)</td><td ${td}>LT ${trc(pp)}</td><td ${td}>Thật ${trc(rp)}</td><td style="border:none;padding:3px 0">${slip!=null?('chênh <b class="'+cls(slip)+'">'+f(slip,2)+'tr</b>'):''}</td></tr>
+   </tbody></table>
+   <div class="mut" style="font-size:11px;margin-top:5px">P&L NET = tính theo vị thế RÒNG (không cộng dồn con-mua-con-bán triệt tiêu như trước) → sát bot.${(fs!=null&&fs!=0)?` Phí tiết kiệm netting <b class="g">${f(fs,2)}tr</b>.`:''} Chênh thật−LT = trượt giá + quy ước (giữ-qua-đêm vs đóng-EOD).${(dvN!=null&&dvN!=0)?` Vị thế lệch ${dvN} HĐ = tín hiệu cuối phiên bot hoãn tới 09:00 mai.`:''}</div>
   </div>`;
  }
  const sideTag=s=>s==='long'?'<span class="g">▲ Long</span>':'<span class="r">▼ Short</span>';
